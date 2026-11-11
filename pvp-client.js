@@ -62,12 +62,16 @@
   }
   function installPvp() {
     G.game.menus?.show('none');
+    // The original title camera fades the entire rendered scene to black.
+    // Its game loop is replaced below, so that fade must be cleared here.
+    G.render.post.fade=0;
+    G.render.post.saturation=1;
     G.hud.show?.(false);
     G.weapon.setVisible?.(false);
     G.player.enabled=false;
     G.input.setGameplay?.(false);
     G.enemies.update=()=>{};
-    G.game={state:'title',update(){return this.state==='playing';}};
+    G.game={state:'title',update(){G.render.post.fade=0;return this.state==='playing';}};
     const originalShot=G.combat.playerShot.bind(G.combat);
     G.combat.playerShot=(origin,dir,opts={})=>{
       const wall=G.physics.raycast(origin,dir,opts.range||300);
